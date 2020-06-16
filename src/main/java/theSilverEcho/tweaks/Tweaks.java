@@ -23,6 +23,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import theSilverEcho.tweaks.FontRenderer.GlyphPageFontRenderer;
+import theSilverEcho.tweaks.clientTime.TimeTypes;
 import theSilverEcho.tweaks.command.ModCommands;
 import theSilverEcho.tweaks.config.Config;
 import theSilverEcho.tweaks.config.GlintColourConfig;
@@ -31,6 +32,7 @@ import theSilverEcho.tweaks.cosmetic.ItemPhysics;
 import theSilverEcho.tweaks.gui.CustomSidebar;
 import theSilverEcho.tweaks.gui.CustomSidebarConfigScreen;
 import theSilverEcho.tweaks.gui.GuiHelper;
+import theSilverEcho.tweaks.gui.MenuScreen;
 import theSilverEcho.tweaks.keyStrokes.KeystrokesRenderer;
 import theSilverEcho.tweaks.notification.Notification;
 import theSilverEcho.tweaks.notification.NotificationManager;
@@ -48,6 +50,9 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("unused") public class Tweaks implements ModInitializer
 {
+
+	public static TimeTypes TIME_TYPE = TimeTypes.VANILLA;
+
 	public static CustomSidebar customSidebar = new CustomSidebar();
 	private static final MinecraftClient minecraft = MinecraftClient.getInstance();
 	private KeystrokesRenderer keystrokesRenderer;
@@ -59,8 +64,14 @@ import java.util.stream.Stream;
 
 	@Override public void onInitialize()
 	{
+		//		RenderEvent.EVENT.register((matrices, partialTicks) -> MinecraftClient.getInstance().textRenderer.draw("text", 10, 10, -1));
 
-
+		//		ColorProviderRegistry.BLOCK.register((block, world, pos, layer) ->
+		//		{
+		//			//			BlockColorProvider provider = ColorProviderRegistry.BLOCK.get(Blocks.GRASS);
+		//			//			return provider == null ? -1 : provider.getColor(block, world, pos, layer);
+		//			return 0x3495eb;//(int) (64 * (Math.sin(System.currentTimeMillis() / 5e2) + 3)) << 16;
+		//		}, Blocks.WHITE_CONCRETE);
 
 
 		/*------Register Keys------*/
@@ -71,8 +82,9 @@ import java.util.stream.Stream;
 		CommandRegistry.INSTANCE.register(false, ModCommands::Register);
 		HudRenderCallback.EVENT.register(v ->
 		{
-			NotificationManager.render();
-			renderer.drawString("wow test abcd ", 20, 20, -1, false);
+
+			//			NotificationManager.render();
+//			renderer.drawString("wow test abcd ", 20, 20, -1, false, 1F);
 			if (keystrokesRenderer == null)
 				keystrokesRenderer = new KeystrokesRenderer();
 			keystrokesRenderer.renderKeystrokes();
@@ -82,7 +94,7 @@ import java.util.stream.Stream;
 
 			if (minecraft.currentScreen instanceof GlintColourConfig)
 			{
-				GuiHelper.fill(2, 1, 0, (int) width * 20 / 100/*width * 20 / 100*/, scaledHeight - 1, -1);
+				GuiHelper.fill(2, 1, 0, width * 20 / 100/*width * 20 / 100*/, scaledHeight - 1, -1);
 				GuiHelper.fill(7, 1, 0, width * 20 / 100, scaledHeight - 1, new Color(255, 255, 255, 120).getRGB());
 			}
 
@@ -111,7 +123,6 @@ import java.util.stream.Stream;
 
 				blocksToHarvest = blocks.parallelStream().filter(this::isCane).sorted(
 						Comparator.comparingDouble(pos -> eyesVec.squaredDistanceTo(new Vec3d(pos)))).collect(Collectors.toList());
-
 				harvest(blocksToHarvest);
 
 			}
@@ -185,14 +196,17 @@ import java.util.stream.Stream;
 				{
 				case 0:
 					Config.setNum(1);
+					TIME_TYPE = TimeTypes.VANILLA;
 					player.addChatMessage(new LiteralText("step changed to vanilla"), true);
 					break;
 				case 1:
 					Config.setNum(2);
+					TIME_TYPE = TimeTypes.SUNSET;
 					player.addChatMessage(new LiteralText("step changed to off"), true);
 					break;
 				case 2:
 					Config.setNum(0);
+					TIME_TYPE = TimeTypes.NIGHT;
 					player.addChatMessage(new LiteralText("step changed to modded"), true);
 					break;
 				}
@@ -215,12 +229,17 @@ import java.util.stream.Stream;
 			if (KeyBinds.swapArmour.wasPressed())
 				MinecraftClient.getInstance().openScreen(new CustomSidebarConfigScreen());
 
+			if (KeyBinds.MENU.wasPressed())
+				MinecraftClient.getInstance().openScreen(new MenuScreen());
+
 		});
 		List<String> blockList = Lists.newArrayList("minecraft:large_fern", "minecraft:tall_grass", "minecraft:grass_block", "minecraft:fern",
 				"minecraft:grass", "minecraft:potted_fern", "minecraft:sugar_cane");
 
 		List<Block> blocks = Lists.newArrayList(Blocks.LARGE_FERN, Blocks.FERN, Blocks.TALL_GRASS, Blocks.GRASS_BLOCK, Blocks.GRASS,
 				Blocks.POTTED_FERN, Blocks.SUGAR_CANE);
+
+		ColorProviderRegistry.ITEM.register((item, layer) -> (int) (64 * (Math.sin(System.currentTimeMillis() / 5e2) + 3)) << 16, Items.WHITE_DYE);
 		if (MinecraftClient.getInstance().getBlockColorMap() != null)
 		{
 			//			registerGreenerColor(blockList,false);

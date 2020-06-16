@@ -7,7 +7,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -21,15 +20,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import theSilverEcho.tweaks.Tweaks;
-import theSilverEcho.tweaks.gui.CurstomButton;
+import theSilverEcho.tweaks.cosmetic.GLSLSandboxShader;
+import theSilverEcho.tweaks.gui.CustomButton;
 import theSilverEcho.tweaks.gui.GuiHelper;
 import theSilverEcho.tweaks.gui.ParticleSystem;
+import theSilverEcho.tweaks.notification.NotificationManager;
 
 import java.awt.*;
+import java.io.IOException;
 
 @Mixin(TitleScreen.class) public abstract class TitleScreenMixin extends Screen
 {
 	private static final Identifier Background = new Identifier("tweaks", "textures/ui/back.jpg");
+//	private GLSLSandboxShader backgroundShader;
+//	private long initTime = System.currentTimeMillis();
 
 	protected TitleScreenMixin(Text title)
 	{
@@ -41,13 +45,21 @@ import java.awt.*;
 	private boolean doBackgroundFade;
 	@Shadow private long backgroundFadeStart;
 	private ParticleSystem particleSystem;
-	private CurstomButton test123;
+	private CustomButton test123;
 
 	@Inject(method = "init", at = @At(value = "HEAD"), cancellable = true) public void init(CallbackInfo ci)
 	{
-		ci.cancel();
-		particleSystem = new ParticleSystem(100, 2, true, true);
-		test123 = new CurstomButton(32, 10, 10, 2, "test123");
+		//		ci.cancel();
+		/*try
+		{
+			this.backgroundShader = new GLSLSandboxShader("/w.fsh");
+			initTime = System.currentTimeMillis();
+		} catch (IOException e)
+		{
+			throw new IllegalStateException("Failed to load backgound shader", e);
+		}*/
+				particleSystem = new ParticleSystem(100, 2, true, true);
+		//		test123 = new CurstomButton(32, 10, 10, 2, "test123");
 
 	}
 
@@ -60,6 +72,24 @@ import java.awt.*;
 	 */
 	@Overwrite public void render(int mouseX, int mouseY, float delta)
 	{
+
+		//		this.backgroundShader.useShader(this.width, this.height, mouseX, mouseY, (System.currentTimeMillis() - initTime) / 1000f);
+
+		//		GL11.glBegin(GL11.GL_QUADS);
+
+		//		GL11.glVertex2f(-1f, -1f);
+		//		GL11.glVertex2f(-1f, 1f);
+		//		GL11.glVertex2f(1f, 1f);
+		//		GL11.glVertex2f(1f, -1f);
+
+		//		GL11.glEnd();
+		//		// Unbind shader
+		//		GL20.glUseProgram(0);
+
+		//		// Stuff enabled done by the skybox rendering
+
+		//		//						this.mc.getTextureManager().bindTexture(minecraftTitleTextures);
+		//		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 		if (this.backgroundFadeStart == 0L && this.doBackgroundFade)
 		{
@@ -79,23 +109,10 @@ import java.awt.*;
 		if ((l & -67108864) != 0)
 		{
 			int scaledWidth = MinecraftClient.getInstance().getWindow().getScaledWidth();
+
 			GuiHelper.fillGradient(GL11.GL_QUADS, scaledWidth - scaledWidth / 6, 0, scaledWidth,
 					MinecraftClient.getInstance().getWindow().getScaledHeight(), new Color(255, 255, 255, 12).getRGB(),
 					new Color(0, 255, 255, 20).getRGB());
-
-			String string = "test " + SharedConstants.getGameVersion().getName();
-			if (this.minecraft.isDemo())
-			{
-				string = string + " Demo";
-			} else
-			{
-				string = string + ("release".equalsIgnoreCase(this.minecraft.getVersionType()) ? "" : "/" + this.minecraft.getVersionType());
-			}
-
-			if (this.minecraft.isModded())
-			{
-				string = string + I18n.translate("menu.modded");
-			}
 
 			//			Tweaks.fontUtils.drawString(string, 2, this.height - 10, 16777215 | l);
 
@@ -110,14 +127,13 @@ import java.awt.*;
 			//			System.out.println(Tweaks.renderer == null);
 			//			System.out.println(Tweaks.renderer.getFontHeight());
 			//			System.out.println(Tweaks.renderer.fontRandom);
+//			RenderSystem.pushMatrix();
+//			RenderSystem.scalef(0.1375f, 0.1375F, 0);
+//			Tweaks.renderer.drawString(string, 2, 10, -1, false, 1F);
+//			RenderSystem.popMatrix();
 
-			RenderSystem.pushMatrix();
-			RenderSystem.scalef(0.2F, 0.2F, 0);
-			//			RenderSystem.color3f(1,0,0);
-			Tweaks.renderer.drawString("string", 2, 10, -1, false);
 			//									this.drawString(this.font, string, 2, this.height - 10, 16777215 | l);
-			RenderSystem.popMatrix();
-			test123.render(mouseX, mouseY, delta);
+//			test123.render(mouseX, mouseY, delta);
 
 		}
 
@@ -130,6 +146,8 @@ import java.awt.*;
 		particleSystem.render(mouseX, mouseY);
 
 		super.render(mouseX, mouseY, delta);
+		NotificationManager.render(mouseX, mouseY);
+
 		//			if (this.areRealmsNotificationsEnabled() && g >= 1.0F) {
 		//				this.realmsNotificationGui.render(mouseX, mouseY, delta);
 		//			}

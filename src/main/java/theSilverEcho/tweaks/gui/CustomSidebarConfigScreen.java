@@ -8,9 +8,25 @@ import theSilverEcho.tweaks.config.ModSlider;
 
 public class CustomSidebarConfigScreen extends Screen
 {
+	private boolean dragging;
+	private int lastX;
+	private int lastY;
+
 	public CustomSidebarConfigScreen()
 	{
 		super(new LiteralText("SidebarConfig1"));
+	}
+
+	@Override public void render(int mouseX, int mouseY, float delta)
+	{
+		super.render(mouseX, mouseY, delta);
+		if (dragging)
+		{
+			Config.setSidebarXOffset(Config.getSidebarXOffset() + mouseX - lastX);
+			Config.setSidebarYOffset(Config.getSidebarYOffset() + mouseY - lastY);
+		}
+		lastX = mouseX;
+		lastY = mouseY;
 	}
 
 	@Override protected void init()
@@ -18,7 +34,6 @@ public class CustomSidebarConfigScreen extends Screen
 		super.init();
 
 		int center = this.width / 2 - 150 / 2;
-
 
 		ModSlider redSlider = new ModSlider(center, 20, Config.getSidebarRed(), "Red");
 		redSlider.setRunnable(() -> Config.setSidebarRed((int) (redSlider.getSliderValue() * 255)));
@@ -42,16 +57,36 @@ public class CustomSidebarConfigScreen extends Screen
 
 	}
 
-	@Override public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY)
+	//	@Override public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY)
+	//	{
+	//		super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+	//		boolean mouseIn = Tweaks.customSidebar.isMouseIn((int) mouseX, (int) mouseY);
+	//		if (mouseIn && Tweaks.customSidebar != null)
+	//		{
+	//
+	//			//			Config.setSidebarXOffset(
+	//			//					(int) (Config.getSidebarXOffset() + (mouseX * scale  /*/ scale*//* + Math.signum(deltaX)*scale*//*Math.signum(deltaX)*/)));
+	//			//			Config.setSidebarYOffset((int) (/*Config.getSidebarYOffset() +*/ (scale)));
+	//			return true;
+	//		}
+	//		//		Config.setSidebarYOffset(0);
+	//		//		Config.setSidebarXOffset(0);
+	//
+	//		return true;
+	//	}
+
+	@Override public boolean mouseClicked(double mouseX, double mouseY, int button)
 	{
-		super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
-		boolean mouseIn = Tweaks.customSidebar.isMouseIn((int) mouseX, (int) mouseY);
-		if (mouseIn && Tweaks.customSidebar != null)
-		{
-			Config.setSidebarXOffset((int) (Config.getSidebarXOffset() + Math.signum(deltaX)));
-			Config.setSidebarYOffset((int) (Config.getSidebarYOffset() + Math.signum(deltaY)));
-			return true;
-		}
+		super.mouseClicked(mouseX, mouseY, button);
+		if (Tweaks.customSidebar.isMouseIn(mouseX, mouseY))
+			dragging = true;
+		return true;
+	}
+
+	@Override public boolean mouseReleased(double mouseX, double mouseY, int button)
+	{
+		super.mouseReleased(mouseX, mouseY, button);
+		dragging = false;
 		return true;
 	}
 
@@ -60,9 +95,8 @@ public class CustomSidebarConfigScreen extends Screen
 
 		if (Tweaks.customSidebar.isMouseIn(((int) d), ((int) e)))
 		{
-			sendMessage(Config.getSidebarSize()+"");
-			if (Config.getSidebarSize() + 0.1*Math.signum(amount) > 0.5 && Config.getSidebarSize() + 0.1*Math.signum(amount) < 3)
-				Config.setSidebarSize((float) ( Config.getSidebarSize()+0.1*Math.signum(amount)));
+			if (Config.getSidebarSize() + 0.1 * Math.signum(amount) > 0.5 && Config.getSidebarSize() + 0.1 * Math.signum(amount) < 3)
+				Config.setSidebarSize((float) (Config.getSidebarSize() + 0.1 * Math.signum(amount)));
 
 		}
 		return true;

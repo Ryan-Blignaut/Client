@@ -27,7 +27,7 @@ public class CustomSidebar extends DrawableHelper
 	{
 	}
 
-	public boolean isMouseIn(int mouseX, int mouseY)
+	public boolean isMouseIn(double mouseX, double mouseY)
 	{
 
 		float scale = Config.getSidebarSize() - 1.0f;
@@ -37,6 +37,9 @@ public class CustomSidebar extends DrawableHelper
 		float minY = maxY - height * Config.getSidebarSize();
 		return mouseX > minX && mouseX < maxX && mouseY > minY - MinecraftClient.getInstance().textRenderer.fontHeight * Config.getSidebarSize() && mouseY < maxY;
 	}
+
+
+
 
 	public void drawSidebar(ScoreboardObjective sidebar, int scaleX, int scaleY/*ScaledResolution res*/)
 	{

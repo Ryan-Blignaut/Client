@@ -42,9 +42,9 @@ public class GuiHelper extends DrawableHelper
 		RenderSystem.enableTexture();
 	}
 
-	public static void fill(int mode, int x1, int y1, int x2, int y2, int color)
+	public static void fill(int mode, double x1, double y1, double x2, double y2, int color)
 	{
-		int j;
+		double j;
 		if (x1 < x2)
 		{
 			j = x1;
@@ -177,6 +177,30 @@ public class GuiHelper extends DrawableHelper
 		bufferBuilder.begin(mode, VertexFormats.POSITION_COLOR);
 
 		for (float i = 0; i <= 360; i += 0.01)
+		{
+			bufferBuilder.vertex(Rotation3.identity().getMatrix(), ((float) (x + Math.cos(i * (Math.PI / 180)) * radiusX)), ((float) (y + Math.sin(
+					i * (Math.PI / 180)) * radiusY)), 0.0F).color(g, h, k, f).next();
+		}
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
+		RenderSystem.enableTexture();
+		RenderSystem.disableBlend();
+	}
+
+	public static void fillEllipse(int mode, int x, int y, float radiusX, float radiusY, int color, int percent)
+	{
+
+		float f = (float) (color >> 24 & 255) / 255.0F;
+		float g = (float) (color >> 16 & 255) / 255.0F;
+		float h = (float) (color >> 8 & 255) / 255.0F;
+		float k = (float) (color & 255) / 255.0F;
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		RenderSystem.enableBlend();
+		RenderSystem.disableTexture();
+		RenderSystem.defaultBlendFunc();
+		bufferBuilder.begin(mode, VertexFormats.POSITION_COLOR);
+
+		for (float i = 0; i <= percent; i += 0.01)
 		{
 			bufferBuilder.vertex(Rotation3.identity().getMatrix(), ((float) (x + Math.cos(i * (Math.PI / 180)) * radiusX)), ((float) (y + Math.sin(
 					i * (Math.PI / 180)) * radiusY)), 0.0F).color(g, h, k, f).next();

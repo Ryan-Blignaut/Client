@@ -16,6 +16,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import theSilverEcho.tweaks.Tweaks;
 import theSilverEcho.tweaks.gui.GuiHelper;
+import theSilverEcho.tweaks.notification.Notification;
+import theSilverEcho.tweaks.notification.NotificationManager;
 
 import java.awt.*;
 import java.util.Optional;
@@ -86,8 +88,8 @@ import java.util.function.Consumer;
 		MinecraftClient.getInstance().getTextureManager().bindTexture(LOGO);
 		RenderSystem.enableBlend();
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, o);
-		blit(0, 0, 0, 0, /*MinecraftClient.getInstance().getWindow().getWidth()*/1920 * 10,
-				1080/* MinecraftClient.getInstance().getWindow().getWidth()*/);
+		blit(0, 0, MinecraftClient.getInstance().getWindow().getScaledWidth(), MinecraftClient.getInstance().getWindow().getScaledHeight(), 0.0F, 0.0F, 16, 128, 16, 128);
+		//		blit(0, 0, 0, 0, MinecraftClient.getInstance().getWindow().getWidth(), MinecraftClient.getInstance().getWindow().getHeight());
 		GuiHelper.fillGradient(7, 0, 0, MinecraftClient.getInstance().getWindow().getScaledWidth(),
 				MinecraftClient.getInstance().getWindow().getScaledHeight(), new Color(46, 52, 64, 35).getRGB(), new Color(76, 86, 106).getRGB());
 		float r = this.reloadMonitor.getProgress();
@@ -98,7 +100,7 @@ import java.util.function.Consumer;
 			//			fill(i / 2 - 150, 0, i / 2 + 150, 21, -1);
 			this.renderProgressBar(i / 2 - 150, j / 4 * 3, i / 2 + 150, j / 4 * 3 + 12);
 			String text = "Progress: " + progress * 100 + "%";
-			Tweaks.renderer.drawString(text, (float) (i / 2 - Tweaks.renderer.getStringWidth(text) / 2), (float) j / 4 * 3 - 1, -1, false);
+			Tweaks.renderer.drawString(text, (float) (i / 2 - Tweaks.renderer.getStringWidth(text) / 2), (float) j / 4 * 3 - 1, -1, false, 0.4F);
 		}
 
 		if (f >= 2.0F)
@@ -109,6 +111,8 @@ import java.util.function.Consumer;
 		if (this.applyCompleteTime == -1L && this.reloadMonitor.isApplyStageComplete() && (!this.reloading || g >= 2.0F))
 		{
 			System.out.println(Util.getMeasuringTimeMs() - applyCompleteTime);
+			NotificationManager.show(
+					new Notification("Time taken to load", Math.round((Util.getMeasuringTimeMs() - applyCompleteTime) / 1000F) + " seconds", 30));
 
 			try
 			{
@@ -132,9 +136,10 @@ import java.util.function.Consumer;
 	private void renderProgressBar(int minX, int minY, int maxX, int maxY)
 	{
 		int i = MathHelper.ceil((float) (maxX - minX - 1) * this.progress);
+		//		GuiHelper.fillEllipse(GL11.GL_TRIANGLE_FAN, 20, 20, 10, 10, -1, (int) (360 * this.progress));
+
 		fill(minX - 1, minY - 1, maxX + 1, maxY + 1, new Color(76, 86, 106).getRGB());
 		fill(minX, minY, maxX, maxY, new Color(70, 77, 93).getRGB());//inner colour
 		fill(minX + 1, minY + 1, minX + i, maxY - 1, new Color(143, 188, 187).getRGB() /*| 143 << 16 | 188 << 8 | 187*/);
-
 	}
 }

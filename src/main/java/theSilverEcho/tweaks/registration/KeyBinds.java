@@ -12,19 +12,27 @@ public class KeyBinds
 {
 	public static final FabricKeyBinding keyBinding = FabricKeyBinding.Builder.create(new Identifier("tweaks", "step"), InputUtil.Type.KEYSYM,
 			GLFW.GLFW_KEY_M, "keys").build();
-	public static final FabricKeyBinding reload = FabricKeyBinding.Builder.create(new Identifier("tweaks", "spook"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F4,
-			"keys").build();
-	public static final FabricKeyBinding glintScreenKey = FabricKeyBinding.Builder.create(new Identifier("tweaks", "open_glint_screen"), InputUtil.Type.KEYSYM,
-			GLFW.GLFW_KEY_F10, "keys").build();
-	public static final FabricKeyBinding swapArmour = FabricKeyBinding.Builder.create(new Identifier("tweaks", "q"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H,
-			"keys").build();
-	public static final FabricKeyBinding perspective = FabricKeyBinding.Builder.create(new Identifier("tweaks", "change_perspective"), InputUtil.Type.KEYSYM,
-			GLFW.GLFW_KEY_V, "keys").build();
+	public static final FabricKeyBinding reload = FabricKeyBinding.Builder.create(new Identifier("tweaks", "spook"), InputUtil.Type.KEYSYM,
+			GLFW.GLFW_KEY_F4, "keys").build();
+	public static final FabricKeyBinding glintScreenKey = FabricKeyBinding.Builder.create(new Identifier("tweaks", "open_glint_screen"),
+			InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F10, "keys").build();
+	public static final FabricKeyBinding swapArmour = FabricKeyBinding.Builder.create(new Identifier("tweaks", "q"), InputUtil.Type.KEYSYM,
+			GLFW.GLFW_KEY_H, "keys").build();
+	public static final FabricKeyBinding perspective = FabricKeyBinding.Builder.create(new Identifier("tweaks", "change_perspective"),
+			InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, "keys").build();
+	public static final FabricKeyBinding MENU = FabricKeyBinding.Builder.create(new Identifier("tweaks", "menu"), InputUtil.Type.KEYSYM,
+			GLFW.GLFW_KEY_RIGHT_SHIFT, "keys").build();
 
 	public static void registerKeys()
 	{
 		for (Field field : KeyBinds.class.getFields())
+		{
+			System.out.println(field);
 			if (field.getGenericType() instanceof FabricKeyBinding)
+			{
+				System.out.println("reg->"+field);
 				KeyBindingRegistry.INSTANCE.register((FabricKeyBinding) field.getGenericType());
+			}
+		}
 	}
 }

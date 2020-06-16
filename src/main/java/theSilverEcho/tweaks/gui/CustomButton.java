@@ -5,7 +5,7 @@ import theSilverEcho.tweaks.Tweaks;
 
 import java.awt.*;
 
-public class CurstomButton extends GuiHelper implements Drawable
+public class CustomButton extends GuiHelper implements Drawable
 {
 	protected int width;
 	protected int height;
@@ -19,7 +19,7 @@ public class CurstomButton extends GuiHelper implements Drawable
 	protected float alpha;
 	protected long nextNarration;
 
-	public CurstomButton(int width, int height, int x, int y, String message)
+	public CustomButton(int width, int height, int x, int y, String message)
 	{
 		this.width = width;
 		this.height = height;
@@ -31,7 +31,7 @@ public class CurstomButton extends GuiHelper implements Drawable
 	@Override public void render(int mouseX, int mouseY, float delta)
 	{
 		//		fillGradient(7, y, x, width, height, -1, 1);
-		Tweaks.renderer.drawString(message, x, y, -1, false);
+		Tweaks.renderer.drawString(message, x, y, -1, false,0.5F);
 		this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 		Color col = Color.red;
 		if (isHovered)

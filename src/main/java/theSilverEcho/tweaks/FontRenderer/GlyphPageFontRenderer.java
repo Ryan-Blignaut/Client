@@ -11,11 +11,13 @@
 package theSilverEcho.tweaks.FontRenderer;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.Locale;
@@ -128,7 +130,7 @@ public class GlyphPageFontRenderer
 
 		GlyphPage regularPage;
 
-		regularPage = new GlyphPage(new Font(fontName, Font.PLAIN, size), true, true);
+		regularPage = new GlyphPage(new Font(fontName, Font.PLAIN, size), false, true);
 
 		regularPage.generateGlyphPage(chars);
 		regularPage.setupTexture();
@@ -167,8 +169,12 @@ public class GlyphPageFontRenderer
 	/**
 	 * Draws the specified string.
 	 */
-	public int drawString(String text, float x, float y, int color, boolean dropShadow)
+	public int drawString(String text, float x, float y, int color, boolean dropShadow, float scale)
 	{
+		RenderSystem.pushMatrix();
+//		RenderSystem.scalef(scale, scale, 0);
+//		x = x * scale;
+//		y = y * scale;
 		GlStateManager.enableAlphaTest();
 		this.resetStyles();
 		int i;
@@ -182,6 +188,7 @@ public class GlyphPageFontRenderer
 			i = this.renderString(text, x, y, color, false);
 		}
 
+		RenderSystem.popMatrix();
 		return i;
 	}
 
@@ -299,7 +306,7 @@ public class GlyphPageFontRenderer
 				glyphPage = getCurrentGlyphPage();
 
 				glyphPage.bindTexture();
-				MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier("tweaks", "textures/ui/font.png"));
+//				MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier("tweaks", "textures/ui/font.png"));
 
 				float f = glyphPage.drawChar(c0, posX, posY);
 

@@ -23,7 +23,6 @@ import theSilverEcho.tweaks.config.Config;
 	 */
 	@Overwrite private static void setupGlintTexturing(float scale)
 	{
-
 		RenderSystem.matrixMode(5890);
 		//				MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier("tweaks", "textures/glint/glint.png"));
 		//		RenderSystem.enableBlend();
@@ -32,12 +31,16 @@ import theSilverEcho.tweaks.config.Config;
 
 		//				RenderSystem.blendFuncSeparate(GL_ONE_MINUS_SRC_COLOR, GL_ONE, GL_ONE, GL_ONE);
 		//		RenderSystem.disableDepthTest();
-		if (Config.getGlintRed() / 255F == 0 && Config.getGlintGreen() / 255F == 0 && Config.getGlintBlue() / 255F == 0)
-			RenderSystem.color4f(ColourHelper.rgb().getRed() / 255F, ColourHelper.rgb().getGreen() / 255F, ColourHelper.rgb().getBlue() / 255F, 1);
-		else
-			RenderSystem.color4f(Config.getGlintRed() / 255F, Config.getGlintGreen() / 255F, Config.getGlintBlue() / 255F, 1);
 		RenderSystem.pushMatrix();
 		RenderSystem.loadIdentity();
+		if (Config.getGlintRed() / 255F == 0 && Config.getGlintGreen() / 255F == 0 && Config.getGlintBlue() / 255F == 0)
+		{
+			RenderSystem.color4f(ColourHelper.rgb().getRed() / 255F, ColourHelper.rgb().getGreen() / 255F, ColourHelper.rgb().getBlue() / 255F, 1);
+		}
+		else
+		{
+			RenderSystem.color4f(Config.getGlintRed() / 255F, Config.getGlintGreen() / 255F, Config.getGlintBlue() / 255F, 1);
+		}
 		long l = Util.getMeasuringTimeMs() * 8L;
 		float f = (float) (l % 110000L) / 110000.0F;
 		float g = (float) (l % 30000L) / 30000.0F;
@@ -45,6 +48,7 @@ import theSilverEcho.tweaks.config.Config;
 		RenderSystem.rotatef(10.0F, 0.0F, 0.0F, 1.0F);
 		RenderSystem.scalef(scale, scale, scale);
 		RenderSystem.matrixMode(5888);
+
 		//		RenderSystem.enableDepthTest();
 		//		RenderSystem.disableBlend();
 

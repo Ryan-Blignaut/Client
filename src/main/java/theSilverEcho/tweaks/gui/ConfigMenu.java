@@ -1,12 +1,8 @@
 package theSilverEcho.tweaks.gui;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-
-import java.util.List;
 
 public class ConfigMenu extends Screen
 {
@@ -24,7 +20,7 @@ public class ConfigMenu extends Screen
 		super.onClose();
 	}
 
-	public boolean isPauseScreen()
+	@Override public boolean isPauseScreen()
 	{
 		return false;
 	}

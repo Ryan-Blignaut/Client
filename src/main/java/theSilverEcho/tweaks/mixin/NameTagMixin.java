@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import theSilverEcho.tweaks.ColourHelper;
+import theSilverEcho.tweaks.events.RenderEvent;
 
 import java.util.stream.StreamSupport;
 
@@ -31,6 +31,8 @@ import java.util.stream.StreamSupport;
 			MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
 			LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci)
 	{
+
+		RenderEvent.EVENT.invoker().render(matrices, tickDelta);
 		StreamSupport.stream(MinecraftClient.getInstance().world.getEntities().spliterator(), false).filter(
 				entity -> entity instanceof ItemEntity && entity.isAlive()).map(ItemEntity.class::cast).forEach(
 				entity -> renderHealthBar(entity, matrices, tickDelta, camera,

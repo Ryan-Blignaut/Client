@@ -11,6 +11,7 @@
 package theSilverEcho.tweaks.FontRenderer;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 
 import javax.imageio.ImageIO;
@@ -19,7 +20,10 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -28,10 +32,10 @@ public class GlyphPage
 {
 	private int imgSize;
 	private int maxFontHeight = -1;
-	private Font font;
-	private boolean antiAliasing;
-	private boolean fractionalMetrics;
-	private HashMap<Character, Glyph> glyphCharacterMap = new HashMap<>();
+	private final Font font;
+	private final boolean antiAliasing;
+	private final boolean fractionalMetrics;
+	private final HashMap<Character, Glyph> glyphCharacterMap = new HashMap<>();
 
 	private BufferedImage bufferedImage;
 	private NativeImageBackedTexture loadedTexture;
@@ -135,16 +139,31 @@ public class GlyphPage
 
 	public void setupTexture()
 	{
-		File file = new File("C:\\Users\\Ryan Blignaut\\Pictures/12334.png");
+	/*	File file = new File("C:\\Users\\Ryan Blignaut\\Pictures/12334.png");
+		if (!file.exists())
+			file.mkdirs();
 		try
 		{
-//			ImageIO.write(bufferedImage, "png", file);
-//			loadedTexture.getImage().writeFile(file);
+			ImageIO.write(bufferedImage, "png", file);
+			loadedTexture.getImage().writeFile(file);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
+		}*/
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		try
+		{
+			ImageIO.write(bufferedImage, "png", os);                          // Passing: ​(RenderedImage im, String formatName, OutputStream output)
+			InputStream is = new ByteArrayInputStream(os.toByteArray());
+			loadedTexture = new NativeImageBackedTexture(NativeImage.read(is));
+
+			//NativeImageBackedTexture(bufferedImage.getWidth(), bufferedImage.getHeight(), true);
+
+		} catch (IOException e)
+		{
+			e.printStackTrace();
 		}
-		loadedTexture = new NativeImageBackedTexture(bufferedImage.getWidth(), bufferedImage.getHeight(), true);
+
 	}
 
 	public void bindTexture()

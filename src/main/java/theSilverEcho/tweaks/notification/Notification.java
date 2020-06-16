@@ -1,8 +1,8 @@
 package theSilverEcho.tweaks.notification;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
+import theSilverEcho.tweaks.Tweaks;
 import theSilverEcho.tweaks.gui.GuiHelper;
 
 import java.awt.*;
@@ -39,7 +39,7 @@ public class Notification extends GuiHelper
 		return System.currentTimeMillis() - start;
 	}
 
-	public void render()
+	public void render(int mouseX,int mouseY)
 	{
 		double offset;
 		int width = 120;
@@ -70,13 +70,15 @@ public class Notification extends GuiHelper
 			GuiHelper.fill(GL11.GL_QUADS, (int) (scaledWidth - offset), scaledHeight - 5 - height, (int) (scaledWidth - offset + 3), scaledHeight - 5,
 					color);
 
-			MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier("tweaks","textures/ui/widgets.png"));
+			//			MinecraftClient.getInstance().getTextureManager().bindTexture(new Identifier("tweaks","textures/ui/widgets.png"));
 			GuiHelper.fill(GL11.GL_QUADS, (int) (scaledWidth - offset), scaledHeight - 5 - height, (int) (scaledWidth - offset + 3), scaledHeight - 5,
 					color);
-			blit( (int) (scaledWidth - offset), scaledHeight - 5 - height,0,0,20,20);
+			//			blit( (int) (scaledWidth - offset), scaledHeight - 5 - height,0,0,20,20);
 
-			MinecraftClient.getInstance().textRenderer.draw(title, (int) (scaledWidth - offset + 8), scaledHeight - height, -1);
-			MinecraftClient.getInstance().textRenderer.draw(message, (int) (scaledWidth - offset + 8), scaledHeight - height + 15, -1);
+			Tweaks.renderer.drawString(title, (int) (scaledWidth - offset + 8), scaledHeight - height - 4, -1, false,0.4F);
+			Tweaks.renderer.drawString(message, (int) (scaledWidth - offset + 8), scaledHeight - height + 12, -1, false,0.4F);
+			//			MinecraftClient.getInstance().textRenderer.draw(title, (int) (scaledWidth - offset + 8), scaledHeight - height, -1);
+			//			MinecraftClient.getInstance().textRenderer.draw(message, (int) (scaledWidth - offset + 8), scaledHeight - height + 15, -1);
 		} catch (Exception e)
 		{
 

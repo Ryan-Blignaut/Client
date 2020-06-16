@@ -33,6 +33,8 @@ public class Config
 	@BooleanConfigValue private static boolean brightnessEnabled;
 	@FloatConfigValue private static float previousBrightness;
 
+	@IntConfigValue(minValue = -500, maxValue = 200, defaultValue = 0) private static int menuXOffset, menuYOffset;
+
 	static
 	{
 		configFile = new File(MinecraftClient.getInstance().runDirectory, "Config" + File.separator + "Tweaks.json");
@@ -432,6 +434,29 @@ public class Config
 		Config.potsGlow = potsGlow;
 		updateConfig();
 	}
+
+	public static int getMenuXOffset()
+	{
+		return menuXOffset;
+	}
+
+	public static void setMenuXOffset(int menuXOffset)
+	{
+		Config.menuXOffset = menuXOffset;
+		updateConfig();
+	}
+
+	public static int getMenuYOffset()
+	{
+		return menuYOffset;
+	}
+
+	public static void setMenuYOffset(int menuYOffset)
+	{
+		Config.menuYOffset = menuYOffset;
+		updateConfig();
+	}
+
 }
 
 

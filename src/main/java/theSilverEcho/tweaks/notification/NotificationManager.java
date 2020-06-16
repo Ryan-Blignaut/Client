@@ -23,12 +23,12 @@ public class NotificationManager
 		}
 	}
 
-	public static void render()
+	public static void render(int mouseX,int mouseY)
 	{
 
 		if (currentNotification != null)
 		{
-			currentNotification.render();
+			currentNotification.render(mouseX,mouseY);
 		}
 		update();
 
